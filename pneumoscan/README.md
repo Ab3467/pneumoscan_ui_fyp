@@ -1,3 +1,17 @@
+# Project: PneumScan (Frontend)
+
+This workspace contains a React + Vite frontend for the PneumScan FYP — an AI-driven pneumonia detection UI. Tailwind CSS is configured; components are ready for later model integration.
+
+To run locally:
+
+```bash
+npm install
+npm run dev
+```
+
+Notes:
+- The app uses Tailwind CSS (see `tailwind.config.js`). If you make changes to the Tailwind config, restart the dev server.
+- The upload flow currently simulates analysis and navigates to `/result` with a preview image. Backend/model integration will be added in the next phase.
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
