@@ -1,6 +1,3 @@
-// Member 3
-// UploadBox.jsx: File upload UI (no backend yet)
-
 import { useNavigate } from "react-router-dom";
 
 export default function UploadBox() {
