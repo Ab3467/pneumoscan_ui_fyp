@@ -15,7 +15,7 @@ export default function Home() {
         </h2>
 
         <p className="max-w-3xl mx-auto text-gray-600">
-          PneumScan is an AI-driven system designed to detect pneumonia
+          PneumoScan is an AI-driven system designed to detect pneumonia
           from chest X-ray images using deep learning models.
         </p>
       </section>
