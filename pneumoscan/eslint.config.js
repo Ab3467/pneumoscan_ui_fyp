@@ -38,3 +38,4 @@ export default [
     },
   },
 ]
+// ESLint rules added to maintain clean and readable codebase
