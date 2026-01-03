@@ -44,3 +44,4 @@ export default function App() {
     </BrowserRouter>
   );
 }
+// Root application component handling main layout
