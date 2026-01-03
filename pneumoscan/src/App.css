@@ -32,3 +32,4 @@
 
 /* small helper for centering panels */
 .center-panel { @apply mx-auto max-w-3xl; }
+/* Global styles for layout consistency */
