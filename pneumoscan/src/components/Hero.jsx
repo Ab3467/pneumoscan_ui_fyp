@@ -134,8 +134,8 @@ export default function Hero() {
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border-[6px] border-white bg-white">
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent z-10" />
                 <img 
-                  src="https://images.unsplash.com/photo-1530497610245-94d3c16cda28?q=80&w=2070&auto=format&fit=crop" 
-                  alt="Doctor analyzing medical data" 
+                  src="/hero-chest.jpg" 
+                  alt="Chest X-ray" 
                   className="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700"
                 />
                 
