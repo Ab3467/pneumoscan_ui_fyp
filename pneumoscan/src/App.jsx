@@ -8,6 +8,15 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+// At the very top of App.jsx
+// Technical FYP commit: dummy variable for component count
+const totalComponents = 0;
+
+function checkStatus() {
+  return true;
+}
+
+console.log("Checking app structure...");
 
 export default function App() {
   return (
