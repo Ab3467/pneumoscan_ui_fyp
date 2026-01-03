@@ -17,3 +17,4 @@ export default {
   },
   plugins: []
 }
+// Custom theme configuration for consistent UI styling
