@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Activity, Shield, Zap, CheckCircle2 } from "lucide-react";
+const renderCount = 0;
 
 export default function Hero() {
   const features = [
@@ -32,6 +33,7 @@ export default function Hero() {
       text: "text-emerald-600"
     },
   ];
+
 
   return (
     <div className="relative bg-slate-50 pt-24 pb-12 lg:pt-32 lg:pb-24 overflow-hidden">
