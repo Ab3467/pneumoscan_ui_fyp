@@ -1,7 +1,5 @@
 # PneumoScan - AI-Powered Pneumonia Detection System
 
-![PneumoScan Banner](https://images.unsplash.com/photo-1576091160550-2187d80aeff2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80)
-
 > **Final Year Project (FYP)**  
 > *Advanced Medical Imaging Made Intelligent*
 
@@ -99,8 +97,8 @@ src/
 ## 👥 Contributors
 
 *   **Ahmad AbuBakr** - Frontend & UI Design
-*   **[Team Member 2]** - ML Model Development
-*   **[Team Member 3]** - Backend & Integration
+*   **[M Shehryar Ahmed]** - ML Model Development
+*   **[M Junaid Riaz]** - Backend & Integration
 
 ---
 *© 2026 PneumoScan FYP Group. All Rights Reserved.*
