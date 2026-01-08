@@ -17,7 +17,19 @@ export default function UploadBox() {
   const [preview, setPreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
+
+  const allowedTypes = ['image/jpeg', 'image/png', 'application/dicom'];
+  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.dcm'];
+
+  const isValidFile = (file) => {
+    const mimeType = file.type;
+    const fileName = file.name.toLowerCase();
+    const extension = fileName.substring(fileName.lastIndexOf('.'));
+
+    return allowedTypes.includes(mimeType) || allowedExtensions.includes(extension);
+  };
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -33,12 +45,20 @@ export default function UploadBox() {
     e.preventDefault();
     setIsDragging(false);
     const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile && droppedFile.type.startsWith("image/")) {
+    if (droppedFile && isValidFile(droppedFile)) {
+      setError(null);
       handleFileSelect(droppedFile);
+    } else {
+      setError("Invalid file type. Please upload JPEG, PNG, or DICOM files only.");
     }
   };
 
   const handleFileSelect = (selectedFile) => {
+    if (!isValidFile(selectedFile)) {
+      setError("Invalid file type. Please upload JPEG, PNG, or DICOM files only.");
+      return;
+    }
+    setError(null);
     setFile(selectedFile);
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -50,6 +70,7 @@ export default function UploadBox() {
   const handleRemove = () => {
     setFile(null);
     setPreview(null);
+    setError(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -78,7 +99,7 @@ export default function UploadBox() {
             ref={fileInputRef}
             onChange={(e) => e.target.files[0] && handleFileSelect(e.target.files[0])}
             className="hidden"
-            accept="image/*"
+            accept="image/jpeg,image/png,.dcm"
           />
 
           <div className="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -92,6 +113,7 @@ export default function UploadBox() {
               browse files
             </button>
           </p>
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
           <div className="flex items-center justify-center gap-4 text-xs text-gray-400 uppercase tracking-wider font-semibold">
             <span>JPG</span>
@@ -118,7 +140,7 @@ export default function UploadBox() {
                 </svg>
               </div>
               <div>
-                <p className="font-medium text-gray-900 truncate max-w-[200px]">{file.name}</p>
+                <p className="font-medium text-gray-900 truncate max-w-50">{file.name}</p>
                 <p className="text-sm text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
               </div>
               <div className="ml-auto text-green-500 font-semibold">Ready</div>
