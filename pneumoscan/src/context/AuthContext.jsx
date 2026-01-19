@@ -4,36 +4,39 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check local storage for persisted user on mount
-    const storedUser = localStorage.getItem("pneumoscan_user");
-    if (storedUser) {
+    // Check local storage for persisted user and token on mount
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+    if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
+      setToken(storedToken);
     }
     setLoading(false);
   }, []);
 
   const login = (userData) => {
-    // Simulate API call
     setUser(userData);
-    localStorage.setItem("pneumoscan_user", JSON.stringify(userData));
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("pneumoscan_user");
+    setToken(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   const signup = (userData) => {
-    // Simulate API call
     setUser(userData);
-    localStorage.setItem("pneumoscan_user", JSON.stringify(userData));
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, signup, loading }}>
+    <AuthContext.Provider value={{ user, token, login, logout, signup, loading }}>
       {children}
     </AuthContext.Provider>
   );

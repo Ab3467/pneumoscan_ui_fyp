@@ -16,27 +16,37 @@ export default function Login() {
   const from = location.state?.from?.pathname || "/upload";
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+  e.preventDefault();
+  setError("");
+  setIsLoading(true);
 
-    // Simulate network delay
-    setTimeout(() => {
-      if (email && password) {
-        login({ email, name: email.split("@")[0] });
-        navigate(from, { replace: true });
-      } else {
-        setError("Please enter valid credentials.");
-      }
-      setIsLoading(false);
-    }, 1500);
-  };
+  try {
+    const res = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
 
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Login failed");
+
+    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("token", data.token);
+    login(data.user);
+    navigate(from, { replace: true });
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+  
   return (
     <div className="min-h-screen pt-16 flex">
       {/* Left Side - Image/Branding */}
       <div className="hidden lg:flex w-1/2 bg-blue-600 relative overflow-hidden items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-teal-600 opacity-90" />
+        <div className="absolute inset-0 bg-linear-to-br from-blue-600 to-teal-600 opacity-90" />
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center mix-blend-overlay" />
         
         <div className="relative z-10 text-white max-w-lg px-12">

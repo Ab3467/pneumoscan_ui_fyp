@@ -11,37 +11,51 @@ export default function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { signup } = useAuth();
+  const { signup: signupUser } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
+  setIsLoading(true);
 
-    // Simulate network delay
-    setTimeout(() => {
-        if (password !== confirmPassword) {
-            setError("Passwords do not match.");
-            setIsLoading(false);
-            return;
-        }
+  if (password.length < 8) {
+    setError("Password must be at least 8 characters");
+    setIsLoading(false);
+    return;
+  }
+  if (password !== confirmPassword) {
+    setError("Passwords do not match");
+    setIsLoading(false);
+    return;
+  }
 
-        if (email && password && name) {
-            signup({ email, name });
-            navigate("/upload");
-        } else {
-            setError("Please fill in all fields.");
-        }
-        setIsLoading(false);
-    }, 1500);
-  };
+  try {
+    const res = await fetch("http://localhost:5000/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || "Signup failed");
+
+    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("token", data.token);
+    signupUser(data.user);
+    navigate("/upload");
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen pt-16 flex flex-row-reverse">
       {/* Right Side - Image/Branding */}
       <div className="hidden lg:flex w-1/2 bg-teal-600 relative overflow-hidden items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-bl from-teal-600 to-blue-600 opacity-90" />
+        <div className="absolute inset-0 bg-linear-to-bl from-teal-600 to-blue-600 opacity-90" />
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2089&q=80')] bg-cover bg-center mix-blend-overlay" />
         
         <div className="relative z-10 text-white max-w-lg px-12 text-right">
@@ -54,7 +68,7 @@ export default function Signup() {
           </p>
         </div>
       </div>
-
+      
       {/* Left Side - Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
         <div className="max-w-md w-full space-y-8">
