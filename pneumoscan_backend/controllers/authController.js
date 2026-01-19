@@ -1,5 +1,16 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
+
+// Email configuration
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 // Signup
 export const signup = async (req, res) => {
@@ -36,6 +47,85 @@ export const login = async (req, res) => {
     res.status(200).json({ token, user: { id: user._id, name: user.name, email: user.email } });
   } catch (error) {
     console.error("Login error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Forgot Password
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "User not found" });
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+    user.resetToken = resetToken;
+    user.resetTokenExpiry = resetTokenExpiry;
+    await user.save();
+
+    // Create reset URL
+    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+
+    // Try to send email, but don't fail if email credentials are not configured
+    if (process.env.EMAIL_USER && process.env.EMAIL_USER !== "your-email@gmail.com") {
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Password Reset Request",
+        html: `
+          <h2>Password Reset</h2>
+          <p>You requested a password reset. Click the link below to reset your password:</p>
+          <a href="${resetUrl}" style="display: inline-block; padding: 10px 20px; background-color: #0ea5e9; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
+          <p>This link will expire in 10 minutes.</p>
+          <p>If you didn't request this, ignore this email.</p>
+        `,
+      };
+
+      try {
+        await transporter.sendMail(mailOptions);
+        console.log("Password reset email sent to:", email);
+      } catch (emailError) {
+        console.error("Email sending error:", emailError.message);
+        // Continue anyway - user can still use the reset link
+      }
+    } else {
+      console.log("Email not configured. Reset link:", resetUrl);
+    }
+
+    res.status(200).json({ 
+      message: "Password reset link sent. For testing, use this link: " + resetUrl,
+      resetUrl: resetUrl 
+    });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Reset Password
+export const resetPassword = async (req, res) => {
+  const { resetToken, password } = req.body;
+
+  try {
+    const user = await User.findOne({
+      resetToken,
+      resetTokenExpiry: { $gt: Date.now() },
+    });
+
+    if (!user) return res.status(400).json({ message: "Invalid or expired reset token" });
+
+    user.password = password;
+    user.resetToken = null;
+    user.resetTokenExpiry = null;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    console.error("Reset password error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
