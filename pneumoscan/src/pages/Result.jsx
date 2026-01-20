@@ -1,16 +1,15 @@
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { CheckCircle, AlertCircle, Zap, BarChart3 } from "lucide-react";
 
 export default function Result() {
   const location = useLocation();
   const image = location.state?.image;
-  const { state } = useLocation();
-  const navigate = useNavigate();
-  const result = state?.pred || (image ? (Math.random() > 0.5 ? 'Positive' : 'Negative') : 'Negative');
+  useLocation();
   
   const [scanId] = useState(() => Math.floor(Math.random() * 10000));
-
+  
   // Mock Result Logic (Random for demo purposes, or fixed)
   // In real app, this comes from the backend
   const isPneumonia = true; // Toggle this for testing different UI states
@@ -32,9 +31,27 @@ export default function Result() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen pt-24 pb-12 bg-gray-50"
+      className="min-h-screen pt-24 pb-12 bg-linear-to-b from-gray-50 to-blue-50/20 relative overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Animated Background Icons */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{ rotate: 360, opacity: [0.1, 0.25, 0.1] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="absolute top-20 right-10 text-green-400"
+        >
+          <CheckCircle size={80} />
+        </motion.div>
+        <motion.div
+          animate={{ rotate: -360, opacity: [0.15, 0.3, 0.15] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-40 left-10 text-blue-300"
+        >
+          <BarChart3 size={70} />
+        </motion.div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="mb-8">
           <Link to="/upload" className="inline-flex items-center text-gray-500 hover:text-gray-900 transition-colors">← Back to Upload</Link>
         </div>
@@ -44,7 +61,7 @@ export default function Result() {
           <div className="lg:col-span-1 space-y-6">
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
               <h3 className="font-semibold text-gray-900 mb-4">Input Image</h3>
-              <div className="bg-gray-900 rounded-xl overflow-hidden aspect-[4/5] flex items-center justify-center">
+              <div className="bg-gray-900 rounded-xl overflow-hidden aspect-4/5 flex items-center justify-center">
                 <img
                   src={image}
                   alt="Analyzed X-ray"
@@ -89,7 +106,7 @@ export default function Result() {
                   </div>
                 </div>
                 
-                <div className="bg-gray-50 px-6 py-4 rounded-xl text-center min-w-[140px]">
+                <div className="bg-gray-50 px-6 py-4 rounded-xl text-center min-w-35">
                   <p className="text-sm text-gray-500 font-medium mb-1">Confidence</p>
                   <p className="text-3xl font-bold text-gray-900">{confidence}%</p>
                 </div>
