@@ -274,7 +274,7 @@ export default function Hero() {
                       delay: i * 0.4,
                     }}
                   />
-
+                  
                   <div className="relative z-10">
                     {/* Icon Container with animation */}
                     <motion.div
