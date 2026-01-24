@@ -27,8 +27,12 @@ export default function UploadBox() {
     const mimeType = file.type;
     const fileName = file.name.toLowerCase();
     const extension = fileName.substring(fileName.lastIndexOf('.'));
-
     return allowedTypes.includes(mimeType) || allowedExtensions.includes(extension);
+  };
+
+  const isChestXrayHeuristic = (img) => {
+    // Disabled: accept all images for now
+    return true;
   };
 
   const handleDragOver = (e) => {
@@ -62,7 +66,19 @@ export default function UploadBox() {
     setFile(selectedFile);
     const reader = new FileReader();
     reader.onloadend = () => {
-      setPreview(reader.result);
+      const result = reader.result;
+      setPreview(result);
+      // Run heuristic after image loads
+      const img = new Image();
+      img.onload = () => {
+        if (!isChestXrayHeuristic(img)) {
+          setError("Image does not appear to be a chest X-ray. Please upload a valid chest X-ray image.");
+          setFile(null);
+          setPreview(null);
+          if (fileInputRef.current) fileInputRef.current.value = "";
+        }
+      };
+      img.src = result;
     };
     reader.readAsDataURL(selectedFile);
   };
@@ -74,13 +90,36 @@ export default function UploadBox() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     if (!file) return;
     setIsAnalyzing(true);
-    setTimeout(() => {
+    setError(null);
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:5000/api/predict", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Prediction failed");
+      }
+
+      const data = await res.json();
+      navigate("/result", { state: { image: preview, prediction: data } });
+    } catch (err) {
+      setError(err.message);
+    } finally {
       setIsAnalyzing(false);
-      navigate("/result", { state: { image: preview } });
-    }, 1500);
+    }
   };
 
   return (

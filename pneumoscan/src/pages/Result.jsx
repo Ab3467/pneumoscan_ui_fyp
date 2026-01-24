@@ -1,19 +1,66 @@
 import { useLocation, Link } from "react-router-dom";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, AlertCircle, Zap, BarChart3 } from "lucide-react";
+import { CheckCircle, AlertCircle, Zap, BarChart3, Download, Share2 } from "lucide-react";
+import jsPDF from "jspdf";
 
 export default function Result() {
   const location = useLocation();
   const image = location.state?.image;
+  const prediction = location.state?.prediction; // { label, confidence }
   useLocation();
   
   const [scanId] = useState(() => Math.floor(Math.random() * 10000));
+  const [isSharing, setIsSharing] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   
-  // Mock Result Logic (Random for demo purposes, or fixed)
-  // In real app, this comes from the backend
-  const isPneumonia = true; // Toggle this for testing different UI states
-  const confidence = 94.8;
+  // Use real prediction if available; otherwise fallback to mock
+  const isPneumonia = prediction?.label === "PNEUMONIA";
+  const confidence = prediction?.confidence ? Math.round(prediction.confidence * 100) : null;
+
+  const handleShare = async () => {
+    setIsSharing(true);
+    const reportText = `PneumoScan Report\n\nScan ID: #PN-${scanId}\nDate: ${new Date().toLocaleDateString()}\nResult: ${isPneumonia ? "Pneumonia Detected" : "Normal / Healthy"}\nConfidence: ${confidence}%\n\nDisclaimer: This tool is for educational and assistive purposes only. Always consult a medical professional for diagnosis.`;
+    try {
+      await navigator.clipboard.writeText(reportText);
+      alert("Report copied to clipboard!");
+    } catch (err) {
+      console.error("Failed to copy:", err);
+      alert("Failed to copy report.");
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
+  const handleDownload = () => {
+    setIsDownloading(true);
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const margin = 20;
+    let y = margin;
+
+    pdf.setFontSize(20);
+    pdf.text("PneumoScan Report", margin, y);
+    y += 15;
+
+    pdf.setFontSize(12);
+    pdf.text(`Scan ID: #PN-${scanId}`, margin, y);
+    y += 8;
+    pdf.text(`Date: ${new Date().toLocaleDateString()}`, margin, y);
+    y += 8;
+    pdf.text(`Result: ${isPneumonia ? "Pneumonia Detected" : "Normal / Healthy"}`, margin, y);
+    y += 8;
+    pdf.text(`Confidence: ${confidence}%`, margin, y);
+    y += 15;
+
+    pdf.setFontSize(10);
+    pdf.text("Disclaimer: This tool is for educational and assistive purposes only.", margin, y);
+    y += 6;
+    pdf.text("Always consult a medical professional for diagnosis.", margin, y);
+
+    pdf.save(`PneumoScan_Report_${scanId}.pdf`);
+    setIsDownloading(false);
+  };
 
   if (!image) {
     return (
@@ -108,12 +155,14 @@ export default function Result() {
                 
                 <div className="bg-gray-50 px-6 py-4 rounded-xl text-center min-w-35">
                   <p className="text-sm text-gray-500 font-medium mb-1">Confidence</p>
-                  <p className="text-3xl font-bold text-gray-900">{confidence}%</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {confidence !== null ? `${confidence}%` : "—"}
+                  </p>
                 </div>
               </div>
 
               <div className="h-4 bg-gray-100 rounded-full overflow-hidden mb-8">
-                <div style={{ width: `${confidence}%` }} className={`h-full ${isPneumonia ? 'bg-red-500' : 'bg-green-500'}`} />
+                <div style={{ width: confidence !== null ? `${confidence}%` : "0%" }} className={`h-full ${isPneumonia ? 'bg-red-500' : 'bg-green-500'}`} />
               </div>
 
               <div className="space-y-6">
@@ -162,11 +211,21 @@ export default function Result() {
               </div>
 
               <div className="mt-8 pt-8 border-t border-gray-100 flex gap-4">
-                <button className="flex-1 bg-white border border-gray-200 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors">
-                  Download Report
+                <button
+                  onClick={handleDownload}
+                  disabled={isDownloading}
+                  className="flex-1 bg-white border border-gray-200 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  <Download className="w-4 h-4" />
+                  {isDownloading ? "Generating..." : "Download Report"}
                 </button>
-                <button className="flex-1 bg-white border border-gray-200 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors">
-                  Share Results
+                <button
+                  onClick={handleShare}
+                  disabled={isSharing}
+                  className="flex-1 bg-white border border-gray-200 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  <Share2 className="w-4 h-4" />
+                  {isSharing ? "Copying..." : "Share Results"}
                 </button>
               </div>
             </div>
