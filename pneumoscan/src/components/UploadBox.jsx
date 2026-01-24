@@ -30,11 +30,6 @@ export default function UploadBox() {
     return allowedTypes.includes(mimeType) || allowedExtensions.includes(extension);
   };
 
-  const isChestXrayHeuristic = (img) => {
-    // Disabled: accept all images for now
-    return true;
-  };
-
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
@@ -66,19 +61,7 @@ export default function UploadBox() {
     setFile(selectedFile);
     const reader = new FileReader();
     reader.onloadend = () => {
-      const result = reader.result;
-      setPreview(result);
-      // Run heuristic after image loads
-      const img = new Image();
-      img.onload = () => {
-        if (!isChestXrayHeuristic(img)) {
-          setError("Image does not appear to be a chest X-ray. Please upload a valid chest X-ray image.");
-          setFile(null);
-          setPreview(null);
-          if (fileInputRef.current) fileInputRef.current.value = "";
-        }
-      };
-      img.src = result;
+      setPreview(reader.result);
     };
     reader.readAsDataURL(selectedFile);
   };

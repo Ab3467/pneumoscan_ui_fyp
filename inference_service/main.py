@@ -49,11 +49,6 @@ preprocess = transforms.Compose([
 
 CLASS_NAMES = ["NORMAL", "PNEUMONIA"]
 
-def is_chest_xray(img: Image.Image) -> bool:
-    """Heuristic check: chest X-rays are typically portrait-ish with reasonable dimensions and mostly grayscale."""
-    # Disabled: accept all images for now
-    return True
-
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
     print("Received /predict request")
@@ -62,8 +57,6 @@ async def predict(file: UploadFile = File(...)):
         print("Reading image bytes...")
         img_bytes = await file.read()
         img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
-        if not is_chest_xray(img):
-            raise HTTPException(status_code=400, detail="Uploaded image does not appear to be a chest X-ray. Please upload a valid chest X-ray image.")
         input_tensor = preprocess(img).unsqueeze(0).to(device)  # shape: [1, 3, 224, 224]
         print("Image preprocessed, running inference...")
 
