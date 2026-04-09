@@ -6,7 +6,7 @@ import path from "path";
 // Configure multer to store file in memory (or temp disk if you prefer)
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB limit
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB limit (increased from 10MB)
   fileFilter: (req, file, cb) => {
     const allowedTypes = ["image/jpeg", "image/png"];
     if (allowedTypes.includes(file.mimetype)) {
@@ -20,12 +20,18 @@ const upload = multer({
 export const predict = [
   upload.single("image"),
   async (req, res) => {
+    console.log("=== PREDICTION REQUEST RECEIVED ===");
+    console.log("File:", req.file ? "YES" : "NO");
+    console.log("Filename:", req.file?.originalname);
+    console.log("Mimetype:", req.file?.mimetype);
+    
     if (!req.file) {
+      console.log("ERROR: No image uploaded");
       return res.status(400).json({ message: "No image uploaded." });
     }
 
     try {
-      // Forward the image buffer to the Python inference service
+      console.log("Forwarding request to Python service...");
       const formData = new FormData();
       formData.append("file", new Blob([req.file.buffer]), req.file.originalname);
 
@@ -41,8 +47,11 @@ export const predict = [
       );
       console.log("Python response:", pythonResponse.data);
 
-      const { label, confidence } = pythonResponse.data;
-      res.status(200).json({ label, confidence });
+      const { label, confidence, validator_label, validator_confidence } = pythonResponse.data;
+      const responsePayload = { label, confidence };
+      if (validator_label !== undefined) responsePayload.validator_label = validator_label;
+      if (validator_confidence !== undefined) responsePayload.validator_confidence = validator_confidence;
+      res.status(200).json(responsePayload);
     } catch (error) {
       console.error("Prediction error:", error.toJSON ? error.toJSON() : error.message);
       if (error.response) {

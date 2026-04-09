@@ -130,7 +130,7 @@ export default function UploadBox() {
 
           <h3 className="text-xl font-bold text-gray-900 mb-2">Upload Chest X-Ray</h3>
           <p className="text-gray-500 mb-6">
-            Drag and drop your image here, or{' '}
+            Drag and drop your chest X-ray image here, or{' '}
             <button onClick={() => fileInputRef.current?.click()} className="text-blue-600 font-medium hover:underline">
               browse files
             </button>

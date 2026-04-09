@@ -5,7 +5,6 @@ import torch.nn as nn
 from torchvision import models, transforms
 from PIL import Image
 import io
-import os
 
 app = FastAPI(title="Pneumonia Detection API", version="1.0")
 
@@ -22,65 +21,62 @@ app.add_middleware(
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
-# Load ResNet50 and adapt for binary classification
+# Load ResNet50 pneumonia model
+print("Loading ResNet50 pneumonia model...")
 model = models.resnet50(weights=None)
-num_ftrs = model.fc.in_features
-model.fc = nn.Linear(num_ftrs, 2)  # your .pth expects 'fc.weight'/'fc.bias'
+model.fc = nn.Linear(2048, 2)
 
-# Load your ResNet50 .pth state dict (replace path if needed)
-MODEL_PATH = "best_resnet50_pneumonia.pth"
 try:
-    state_dict = torch.load(MODEL_PATH, map_location=device)
+    state_dict = torch.load("best_resnet50_pneumonia.pth", map_location=device)
     model.load_state_dict(state_dict)
-    model.to(device)
-    model.eval()
-    print("Pneumonia detection model loaded successfully.")
+    print("✅ Pneumonia model loaded!")
 except Exception as e:
-    raise RuntimeError(f"Failed to load pneumonia model: {e}")
+    print(f"❌ Pneumonia model error: {e}")
+    raise
 
-# Apply softmax in inference instead of embedding it in the model
+model.to(device)
+model.eval()
 
-# Preprocessing: resize to 224x224, ImageNet normalization
+# Preprocessing
 preprocess = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                         std=[0.229, 0.224, 0.225]),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
 CLASS_NAMES = ["NORMAL", "PNEUMONIA"]
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
-    print("Received /predict request")
+    print("=== NEW PREDICTION REQUEST ===")
     try:
-        # Read and open image
-        print("Reading image bytes...")
+        # Read image
         img_bytes = await file.read()
         img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
-        input_tensor = preprocess(img).unsqueeze(0).to(device)  # shape: [1, 3, 224, 224]
+        input_tensor = preprocess(img).unsqueeze(0).to(device)
         
-        # Step 2: proceed with pneumonia detection using ResNet50
+        print(f"Image loaded: {img.size}")
+        
+        # Step 2: Pneumonia detection with ResNet50
         print("Running pneumonia detection...")
         with torch.no_grad():
-            outputs = model(input_tensor)  # raw logits
-            probs = torch.nn.functional.softmax(outputs.squeeze(0), dim=0).cpu().numpy()
+            outputs = model(input_tensor)
+            probs = torch.nn.functional.softmax(outputs.squeeze(0), dim=0)
             pred_idx = int(probs.argmax())
             confidence = float(probs[pred_idx])
             label = CLASS_NAMES[pred_idx]
-        print(f"Pneumonia prediction: {label} ({confidence:.4f})")
-
-        return {
-            "label": label,
-            "confidence": confidence,
-        }
+        
+        print(f"🎯 Result: {label} ({confidence:.2%} confidence)")
+        
+        return {"label": label, "confidence": confidence}
+        
     except Exception as e:
-        print("Error during inference:", e)
-        raise HTTPException(status_code=500, detail=f"Inference failed: {e}")
+        print(f"❌ Error: {e}")
+        raise HTTPException(status_code=500, detail=f"Prediction failed: {e}")
 
 @app.get("/")
 def health():
-    return {"status": "ok", "device": str(device)}
+    return {"status": "ok", "device": str(device), "models": "ResNet18 + ResNet50"}
 
 if __name__ == "__main__":
     import uvicorn

@@ -15,5 +15,17 @@ app.use("/api/auth", authRoutes);
 import predictRoutes from "./routes/predictRoutes.js";
 app.use("/api", predictRoutes);
 
+// Add root route to show backend is working
+app.get("/", (req, res) => {
+  res.json({
+    message: "PneumoScan Backend API is running!",
+    status: "active",
+    endpoints: {
+      predict: "/api/predict",
+      auth: "/api/auth"
+    }
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
