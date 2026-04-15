@@ -113,7 +113,7 @@ async def predict(file: UploadFile = File(...)):
 
 @app.get("/")
 def health():
-    return {"status": "ok", "device": str(device), "models": "ResNet18 + ResNet50"}
+    return {"status": "ok", "device": str(device), "models": "ResNet50"}
 
 if __name__ == "__main__":
     import uvicorn

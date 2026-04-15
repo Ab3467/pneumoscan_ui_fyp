@@ -47,10 +47,9 @@ export const predict = [
       );
       console.log("Python response:", pythonResponse.data);
 
-      const { label, confidence, validator_label, validator_confidence } = pythonResponse.data;
+      const { label, confidence, heatmap } = pythonResponse.data;
       const responsePayload = { label, confidence };
-      if (validator_label !== undefined) responsePayload.validator_label = validator_label;
-      if (validator_confidence !== undefined) responsePayload.validator_confidence = validator_confidence;
+      if (heatmap) responsePayload.heatmap = heatmap;
       res.status(200).json(responsePayload);
     } catch (error) {
       console.error("Prediction error:", error.toJSON ? error.toJSON() : error.message);

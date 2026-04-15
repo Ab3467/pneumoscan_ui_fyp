@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import { isDbConnected } from "../config/db.js";
 
 // Email configuration
 const transporter = nodemailer.createTransport({
@@ -12,11 +13,35 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const ensureDbConnection = (res) => {
+  if (!isDbConnected()) {
+    res.status(503).json({
+      message: "Database is not connected. Please check MongoDB and try again.",
+    });
+    return false;
+  }
+  return true;
+};
+
+const handleDbBufferingError = (error, res) => {
+  if (
+    error?.message?.includes("buffering timed out") ||
+    error?.message?.includes("before initial connection is complete")
+  ) {
+    return res.status(503).json({
+      message: "Database is not connected. Please check MongoDB and try again.",
+    });
+  }
+  return null;
+};
+
 // Signup
 export const signup = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
+    if (!ensureDbConnection(res)) return;
+
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).json({ message: "User already exists" });
 
@@ -27,6 +52,8 @@ export const signup = async (req, res) => {
     res.status(201).json({ token, user: { id: user._id, name: user.name, email: user.email } });
   } catch (error) {
     console.error("Signup error:", error);
+    const dbErrorResponse = handleDbBufferingError(error, res);
+    if (dbErrorResponse) return;
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
@@ -36,6 +63,8 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    if (!ensureDbConnection(res)) return;
+
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
@@ -47,6 +76,8 @@ export const login = async (req, res) => {
     res.status(200).json({ token, user: { id: user._id, name: user.name, email: user.email } });
   } catch (error) {
     console.error("Login error:", error);
+    const dbErrorResponse = handleDbBufferingError(error, res);
+    if (dbErrorResponse) return;
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
@@ -56,6 +87,8 @@ export const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
   try {
+    if (!ensureDbConnection(res)) return;
+
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "User not found" });
 
@@ -102,6 +135,8 @@ export const forgotPassword = async (req, res) => {
     });
   } catch (error) {
     console.error("Forgot password error:", error);
+    const dbErrorResponse = handleDbBufferingError(error, res);
+    if (dbErrorResponse) return;
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
@@ -111,6 +146,8 @@ export const resetPassword = async (req, res) => {
   const { resetToken, password } = req.body;
 
   try {
+    if (!ensureDbConnection(res)) return;
+
     const user = await User.findOne({
       resetToken,
       resetTokenExpiry: { $gt: Date.now() },
@@ -126,6 +163,8 @@ export const resetPassword = async (req, res) => {
     res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
     console.error("Reset password error:", error);
+    const dbErrorResponse = handleDbBufferingError(error, res);
+    if (dbErrorResponse) return;
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
@@ -135,6 +174,8 @@ export const deleteAccount = async (req, res) => {
   const { userId } = req.body;
 
   try {
+    if (!ensureDbConnection(res)) return;
+
     if (!userId) {
       return res.status(400).json({ message: "User ID is required" });
     }
@@ -148,6 +189,8 @@ export const deleteAccount = async (req, res) => {
     res.status(200).json({ message: "Account deleted successfully" });
   } catch (error) {
     console.error("Delete account error:", error);
+    const dbErrorResponse = handleDbBufferingError(error, res);
+    if (dbErrorResponse) return;
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };

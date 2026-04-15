@@ -13,10 +13,12 @@ export default function Result() {
   const [scanId] = useState(() => Math.floor(Math.random() * 10000));
   const [isSharing, setIsSharing] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [showHeatmap, setShowHeatmap] = useState(false);
   
   // Use real prediction if available; otherwise fallback to mock
   const isPneumonia = prediction?.label === "PNEUMONIA";
   const confidence = prediction?.confidence ? Math.round(prediction.confidence * 100) : null;
+  const heatmap = prediction?.heatmap;
 
   const handleShare = async () => {
     setIsSharing(true);
@@ -108,13 +110,35 @@ export default function Result() {
           <div className="lg:col-span-1 space-y-6">
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
               <h3 className="font-semibold text-gray-900 mb-4">Input Image</h3>
-              <div className="bg-gray-900 rounded-xl overflow-hidden aspect-4/5 flex items-center justify-center">
+              <div className="bg-gray-900 rounded-xl overflow-hidden aspect-4/5 flex items-center justify-center relative">
                 <img
                   src={image}
                   alt="Analyzed X-ray"
                   className="w-full h-full object-contain"
                 />
+                {showHeatmap && heatmap && (
+                  <img
+                    src={heatmap}
+                    alt="AI Explainability Heatmap"
+                    className="absolute inset-0 w-full h-full object-contain opacity-60 mix-blend-screen pointer-events-none"
+                  />
+                )}
               </div>
+              
+              {heatmap && (
+                <div className="mt-4 flex justify-center">
+                  <label className="flex items-center gap-2 cursor-pointer bg-blue-50 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={showHeatmap}
+                      onChange={() => setShowHeatmap(!showHeatmap)}
+                      className="w-4 h-4 text-blue-600 rounded"
+                    />
+                    <span className="font-medium text-blue-900 text-sm">Overlay AI Explainability (Heatmap)</span>
+                  </label>
+                </div>
+              )}
+
               <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-gray-500">Scan Date</p>

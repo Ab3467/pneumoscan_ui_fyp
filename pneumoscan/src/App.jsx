@@ -4,6 +4,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import Upload from "./pages/Upload";
 import Result from "./pages/Result";
+import History from "./pages/History";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -46,6 +47,14 @@ export default function App() {
                 element={
                   <ProtectedRoute>
                     <Result />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/history" 
+                element={
+                  <ProtectedRoute>
+                    <History />
                   </ProtectedRoute>
                 } 
               />

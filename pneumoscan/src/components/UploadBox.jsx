@@ -97,6 +97,26 @@ export default function UploadBox() {
       }
 
       const data = await res.json();
+
+      // Save to analysis history
+      try {
+        await fetch("http://localhost:5000/api/analysis", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            label: data.label,
+            confidence: data.confidence,
+            imageUrl: preview,
+            heatmapUrl: data.heatmap || null,
+          }),
+        });
+      } catch (err) {
+        console.error("Failed to save history:", err);
+      }
+
       navigate("/result", { state: { image: preview, prediction: data } });
     } catch (err) {
       setError(err.message);
