@@ -13,7 +13,9 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 import predictRoutes from "./routes/predictRoutes.js";
+import analysisRoutes from "./routes/analysisRoutes.js";
 app.use("/api", predictRoutes);
+app.use("/api/analysis", analysisRoutes);
 
 // Add root route to show backend is working
 app.get("/", (req, res) => {
