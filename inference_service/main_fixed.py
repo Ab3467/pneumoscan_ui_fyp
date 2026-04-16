@@ -14,10 +14,10 @@ from pytorch_grad_cam.utils.image import show_cam_on_image
 
 app = FastAPI(title="Pneumonia Detection API", version="1.0")
 
-# Allow frontend (localhost:5173) and backend (localhost:5000) to call this service
+# Allow frontend and backend to call this service
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5000"],
+    allow_origins=["http://localhost:5173", "http://localhost:5174", "http://localhost:5000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

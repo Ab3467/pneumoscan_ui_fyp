@@ -20,9 +20,21 @@ export default function Result() {
   const confidence = prediction?.confidence ? Math.round(prediction.confidence * 100) : null;
   const heatmap = prediction?.heatmap;
 
+  const modelMetrics = {
+    accuracy: "92.46%",
+    precision: "92.62%",
+    recall: "92.46%",
+    f1: "92.36%",
+    auc: "97.46%",
+    confusion: {
+      normal: { tn: 197, fp: 37 },
+      pneumonia: { fn: 10, tp: 380 },
+    },
+  };
+
   const handleShare = async () => {
     setIsSharing(true);
-    const reportText = `PneumoScan Report\n\nScan ID: #PN-${scanId}\nDate: ${new Date().toLocaleDateString()}\nResult: ${isPneumonia ? "Pneumonia Detected" : "Normal / Healthy"}\nConfidence: ${confidence}%\n\nDisclaimer: This tool is for educational and assistive purposes only. Always consult a medical professional for diagnosis.`;
+    const reportText = `PneumoScan Report\n\nScan ID: #PN-${scanId}\nDate: ${new Date().toLocaleDateString()}\nModel: ResNet50\nAccuracy: ${modelMetrics.accuracy}\nAUC: ${modelMetrics.auc}\nResult: ${isPneumonia ? "Pneumonia Detected" : "Normal / Healthy"}\nConfidence: ${confidence}%\n\nDisclaimer: This tool is for educational and assistive purposes only. Always consult a medical professional for diagnosis.`;
     try {
       await navigator.clipboard.writeText(reportText);
       alert("Report copied to clipboard!");
@@ -198,6 +210,59 @@ export default function Result() {
                       : "The AI model analyzed the chest X-ray and found no significant abnormalities. The lung fields appear clear with no signs of consolidation or pleural effusion."
                     }
                   </p>
+                </div>
+
+                <div className="grid gap-6 lg:grid-cols-2">
+                  <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200">
+                    <h3 className="text-lg font-bold text-slate-900 mb-4">Model Evaluation Metrics</h3>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      {[
+                        { label: "Accuracy", value: modelMetrics.accuracy },
+                        { label: "Precision", value: modelMetrics.precision },
+                        { label: "Recall", value: modelMetrics.recall },
+                        { label: "F1 Score", value: modelMetrics.f1 },
+                        { label: "AUC", value: modelMetrics.auc },
+                      ].map((metric) => (
+                        <div key={metric.label} className="bg-white p-4 rounded-3xl shadow-sm border border-slate-100">
+                          <p className="text-xs text-slate-500 uppercase tracking-[0.16em] mb-2">{metric.label}</p>
+                          <p className="text-2xl font-bold text-slate-900">{metric.value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-50 p-6 rounded-3xl border border-slate-200">
+                    <h3 className="text-lg font-bold text-slate-900 mb-4">Classification Report</h3>
+                    <div className="overflow-x-auto rounded-2xl border border-slate-200">
+                      <table className="min-w-full text-left text-sm text-slate-700">
+                        <thead className="bg-slate-100 text-slate-500 uppercase text-xs">
+                          <tr>
+                            <th className="px-4 py-3">Label</th>
+                            <th className="px-4 py-3">Precision</th>
+                            <th className="px-4 py-3">Recall</th>
+                            <th className="px-4 py-3">F1 Score</th>
+                            <th className="px-4 py-3">Support</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-t border-slate-200 bg-white">
+                            <td className="px-4 py-3 font-semibold text-slate-900">NORMAL</td>
+                            <td className="px-4 py-3">0.95</td>
+                            <td className="px-4 py-3">0.84</td>
+                            <td className="px-4 py-3">0.89</td>
+                            <td className="px-4 py-3">234</td>
+                          </tr>
+                          <tr className="border-t border-slate-200 bg-slate-50">
+                            <td className="px-4 py-3 font-semibold text-slate-900">PNEUMONIA</td>
+                            <td className="px-4 py-3">0.91</td>
+                            <td className="px-4 py-3">0.97</td>
+                            <td className="px-4 py-3">0.94</td>
+                            <td className="px-4 py-3">390</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="bg-blue-50 p-6 rounded-xl border border-blue-100">

@@ -13,17 +13,25 @@ export default function ModelStats() {
     },
     {
       icon: <Activity className="w-6 h-6 text-white" />,
-      value: "95.2%",
+      value: "92.46%",
       label: "Model Accuracy",
-      desc: "Achieved on independent test set using Custom CNN",
+      desc: "ResNet50 performance on held-out pneumonia data",
       gradient: "from-emerald-500 to-teal-400",
       color: "bg-emerald-500"
     },
     {
+      icon: <Layers className="w-6 h-6 text-white" />,
+      value: "97.46%",
+      label: "AUC Score",
+      desc: "Strong discrimination between normal and pneumonia cases",
+      gradient: "from-indigo-500 to-violet-500",
+      color: "bg-indigo-500"
+    },
+    {
       icon: <Brain className="w-6 h-6 text-white" />,
-      value: "ResNet50",
-      label: "Architecture",
-      desc: "Transfer learning with fine-tuned convolution layers",
+      value: "92.36%",
+      label: "F1 Score",
+      desc: "Balanced precision and recall across both classes",
       gradient: "from-purple-600 to-pink-500",
       color: "bg-purple-600"
     }
@@ -106,16 +114,16 @@ export default function ModelStats() {
           className="text-center max-w-3xl mx-auto mb-20"
         >
           <div className="inline-block px-4 py-2 bg-white rounded-lg shadow-sm text-sm font-semibold text-blue-600 mb-6 border border-blue-100">
-            Performance Metrics
+            ResNet50 Evaluation
           </div>
           <h2 className="text-5xl font-bold text-slate-900 mb-6 leading-tight">
-            Advanced ML Model <br />
+            Pneumonia Detection <br />
             <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 via-teal-500 to-purple-600">
-              Built for Accuracy
+              with Clinical-Grade Metrics
             </span>
           </h2>
           <p className="text-xl text-slate-600 leading-relaxed">
-            Our AI model is built on rigorous testing and high-quality medical datasets with proven results.
+            The ResNet50 model delivers high accuracy and robust classification performance for pneumonia screening.
           </p>
         </motion.div>
 
@@ -125,7 +133,7 @@ export default function ModelStats() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20"
+          className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-20"
         >
           {stats.map((stat, i) => (
             <motion.div

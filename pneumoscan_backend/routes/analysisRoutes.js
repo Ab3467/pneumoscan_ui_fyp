@@ -10,9 +10,16 @@ const router = express.Router();
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const { label, confidence, imageUrl, heatmapUrl } = req.body;
+    const userId = req.user?._id || req.user?.id;
+
+    console.log("Analysis history request user:", req.user, "Authorization:", req.headers.authorization);
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized: Missing user ID." });
+    }
 
     const analysis = new Analysis({
-      user: req.user._id,
+      user: userId,
       label,
       confidence,
       imageUrl,
@@ -32,7 +39,13 @@ router.post("/", authMiddleware, async (req, res) => {
 // @access  Private
 router.get("/", authMiddleware, async (req, res) => {
   try {
-    const history = await Analysis.find({ user: req.user._id }).sort({ createdAt: -1 });
+    const userId = req.user?._id || req.user?.id;
+    console.log("Fetch history request user:", req.user, "Authorization:", req.headers.authorization);
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized: Missing user ID." });
+    }
+
+    const history = await Analysis.find({ user: userId }).sort({ createdAt: -1 });
     res.json(history);
   } catch (error) {
     console.error("Error fetching analysis history:", error);

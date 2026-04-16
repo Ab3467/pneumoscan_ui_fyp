@@ -194,3 +194,64 @@ export const deleteAccount = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+// Update Profile
+export const updateProfile = async (req, res) => {
+  const { name, email } = req.body;
+  const userId = req.user.id;
+
+  try {
+    if (!ensureDbConnection(res)) return;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Check if email is being changed and if it's already taken
+    if (email && email !== user.email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) return res.status(400).json({ message: "Email already in use" });
+    }
+
+    if (name) user.name = name;
+    if (email) user.email = email;
+
+    await user.save();
+
+    res.status(200).json({ 
+      message: "Profile updated successfully",
+      user: { id: user._id, name: user.name, email: user.email }
+    });
+  } catch (error) {
+    console.error("Update profile error:", error);
+    const dbErrorResponse = handleDbBufferingError(error, res);
+    if (dbErrorResponse) return;
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// Change Password
+export const changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  const userId = req.user.id;
+
+  try {
+    if (!ensureDbConnection(res)) return;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Verify current password
+    const isMatch = await user.matchPassword(currentPassword);
+    if (!isMatch) return res.status(400).json({ message: "Current password is incorrect" });
+
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    console.error("Change password error:", error);
+    const dbErrorResponse = handleDbBufferingError(error, res);
+    if (dbErrorResponse) return;
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

@@ -2,11 +2,12 @@ import multer from "multer";
 import axios from "axios";
 import fs from "fs";
 import path from "path";
+import FormData from "form-data";
 
-// Configure multer to store file in memory (or temp disk if you prefer)
+// Configure multer to store file in memory
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB limit (increased from 10MB)
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB limit
   fileFilter: (req, file, cb) => {
     const allowedTypes = ["image/jpeg", "image/png"];
     if (allowedTypes.includes(file.mimetype)) {
@@ -31,35 +32,39 @@ export const predict = [
     }
 
     try {
-      console.log("Forwarding request to Python service...");
+      console.log("Forwarding request to Python service at:", process.env.INFERENCE_SERVICE_URL);
+      
+      // Create FormData for axios (using form-data package for Node.js)
       const formData = new FormData();
-      formData.append("file", new Blob([req.file.buffer]), req.file.originalname);
+      formData.append("file", req.file.buffer, {
+        filename: req.file.originalname,
+        contentType: req.file.mimetype
+      });
 
-      console.log("Forwarding request to Python service...");
       const pythonResponse = await axios.post(
         `${process.env.INFERENCE_SERVICE_URL}/predict`,
         formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: formData.getHeaders(),
+          timeout: 30000, // 30 second timeout
         }
       );
-      console.log("Python response:", pythonResponse.data);
+      console.log("Python response received:", pythonResponse.data);
 
       const { label, confidence, heatmap } = pythonResponse.data;
       const responsePayload = { label, confidence };
       if (heatmap) responsePayload.heatmap = heatmap;
+      
       res.status(200).json(responsePayload);
     } catch (error) {
-      console.error("Prediction error:", error.toJSON ? error.toJSON() : error.message);
+      console.error("Prediction error:", error.message);
       if (error.response) {
-        console.error("Python service responded with:", error.response.status, error.response.data);
+        console.error("Python service error:", error.response.status, error.response.data);
         return res
-          .status(error.response.status)
-          .json({ message: error.response.data.detail || "Prediction failed." });
+          .status(error.response.status || 500)
+          .json({ message: error.response.data?.detail || "Prediction failed." });
       }
-      res.status(500).json({ message: "Internal server error." });
+      res.status(500).json({ message: error.message || "Internal server error." });
     }
   },
 ];

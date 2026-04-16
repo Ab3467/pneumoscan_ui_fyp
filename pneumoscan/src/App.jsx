@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { ToastProvider } from "./context/ToastContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import Upload from "./pages/Upload";
@@ -9,6 +10,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import Profile from "./pages/Profile";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 // At the very top of App.jsx
@@ -24,7 +26,8 @@ console.log("Checking app structure...");
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
+      <ToastProvider>
+        <AuthProvider>
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <main className="grow">
@@ -58,12 +61,19 @@ export default function App() {
                   </ProtectedRoute>
                 } 
               />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } 
+              />
             </Routes>
           </main>
           <Footer />
         </div>
-      </AuthProvider>
-    </BrowserRouter>
+      </AuthProvider>      </ToastProvider>    </BrowserRouter>
   );
 }
 // Root application component handling main layout

@@ -100,6 +100,7 @@ export default function Navbar() {
   if (user) {
     navLinks.push({ name: "Scan Now", path: "/upload", icon: <UploadCloud size={18} /> });
     navLinks.push({ name: "History", path: "/history", icon: <Activity size={18} /> });
+    navLinks.push({ name: "Profile", path: "/profile", icon: <User size={18} /> });
   }
 
   return (

@@ -17,6 +17,7 @@ export default function UploadBox() {
   const [preview, setPreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
 
@@ -77,11 +78,13 @@ export default function UploadBox() {
     if (!file) return;
     setIsAnalyzing(true);
     setError(null);
+    setProgress(0);
 
     const formData = new FormData();
     formData.append("image", file);
 
     try {
+      setProgress(25); // Starting analysis
       const token = localStorage.getItem("token");
       const res = await fetch("http://localhost:5000/api/predict", {
         method: "POST",
@@ -91,16 +94,20 @@ export default function UploadBox() {
         body: formData,
       });
 
+      setProgress(60); // Prediction received
+
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.message || "Prediction failed");
       }
 
       const data = await res.json();
+      setProgress(80); // Processing results
+      let saveError = null;
 
-      // Save to analysis history
-      try {
-        await fetch("http://localhost:5000/api/analysis", {
+      // Save to analysis history if authenticated
+      if (token) {
+        const historyResponse = await fetch("http://localhost:5000/api/analysis", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -113,15 +120,25 @@ export default function UploadBox() {
             heatmapUrl: data.heatmap || null,
           }),
         });
-      } catch (err) {
-        console.error("Failed to save history:", err);
+
+        if (!historyResponse.ok) {
+          const historyError = await historyResponse.json();
+          saveError = historyError.message || "Failed to save analysis history.";
+        }
+      } else {
+        saveError = "Login to save the analysis history.";
       }
 
+      setProgress(100); // Complete
       navigate("/result", { state: { image: preview, prediction: data } });
+      if (saveError) {
+        setError(saveError);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
       setIsAnalyzing(false);
+      setProgress(0);
     }
   };
 
@@ -187,6 +204,21 @@ export default function UploadBox() {
               </div>
               <div className="ml-auto text-green-500 font-semibold">Ready</div>
             </div>
+
+            {isAnalyzing && (
+              <div className="mb-4">
+                <div className="flex justify-between text-sm text-gray-600 mb-2">
+                  <span>Analyzing image...</span>
+                  <span>{progress}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
 
             <button onClick={handleAnalyze} disabled={isAnalyzing} className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-lg hover:bg-blue-700 disabled:bg-blue-400 transition-all">
               {isAnalyzing ? 'Analyzing...' : 'Analyze Image'}

@@ -6,8 +6,8 @@ export default function Hero() {
   const features = [
     {
       icon: <Activity className="w-6 h-6" />,
-      title: "High Accuracy",
-      desc: "Trained on 50,000+ X-ray images for precise clinical validation.",
+      title: "ResNet50 Accuracy",
+      desc: "Powered by ResNet50 with 92.46% accuracy and 97.46% AUC.",
       color: "blue",
       gradient: "from-blue-500 to-cyan-500",
       bg: "bg-blue-50",
@@ -15,8 +15,8 @@ export default function Hero() {
     },
     {
       icon: <Zap className="w-6 h-6" />,
-      title: "Instant Analysis",
-      desc: "Get detailed diagnostic reports within seconds of uploading.",
+      title: "Instant Diagnosis",
+      desc: "Upload a chest X-ray and receive a triage-ready report in seconds.",
       color: "amber",
       gradient: "from-amber-500 to-orange-500",
       bg: "bg-amber-50",
@@ -24,8 +24,8 @@ export default function Hero() {
     },
     {
       icon: <Shield className="w-6 h-6" />,
-      title: "HIPAA Compliant",
-      desc: "Enterprise-grade security ensuring your patient data remains private.",
+      title: "Explainable Output",
+      desc: "Visual heatmaps and confidence scores help support clinical review.",
       color: "emerald",
       gradient: "from-emerald-500 to-teal-500",
       bg: "bg-emerald-50",
@@ -140,18 +140,18 @@ export default function Hero() {
                 </a>
               </div>
 
-              <div className="mt-10 flex items-center justify-center lg:justify-start gap-8 text-sm text-slate-500 font-medium">
+              <div className="mt-10 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-8 text-sm text-slate-500 font-medium">
                 <div className="flex items-center gap-2">
                   <div className="p-1 bg-teal-50 rounded-full">
                     <CheckCircle2 className="w-5 h-5 text-teal-500" />
                   </div>
-                  <span>98.5% Accuracy</span>
+                  <span>92.46% Accuracy</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="p-1 bg-teal-50 rounded-full">
                     <CheckCircle2 className="w-5 h-5 text-teal-500" />
                   </div>
-                  <span>FDA Guidelines</span>
+                  <span>97.46% AUC</span>
                 </div>
               </div>
             </motion.div>
