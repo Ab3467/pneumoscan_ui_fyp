@@ -4,6 +4,8 @@ import { User, Mail, Lock, Save, AlertCircle, CheckCircle, Settings, Shield, Eye
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:5000";
+
 export default function Profile() {
   const { user, login } = useAuth();
   const { addToast } = useToast();
@@ -39,8 +41,9 @@ export default function Profile() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/auth/profile", {
+      const res = await fetch(`${API_BASE_URL}/api/auth/profile`, {
         method: "PUT",
+        mode: "cors",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -49,7 +52,13 @@ export default function Profile() {
       });
 
       if (!res.ok) {
-        const err = await res.json();
+        let err;
+        try {
+          err = await res.json();
+        } catch {
+          const text = await res.text();
+          throw new Error(text || "Failed to update profile");
+        }
         throw new Error(err.message || "Failed to update profile");
       }
 
@@ -80,8 +89,9 @@ export default function Profile() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/auth/change-password", {
+      const res = await fetch(`${API_BASE_URL}/api/auth/change-password`, {
         method: "PUT",
+        mode: "cors",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -93,7 +103,13 @@ export default function Profile() {
       });
 
       if (!res.ok) {
-        const err = await res.json();
+        let err;
+        try {
+          err = await res.json();
+        } catch {
+          const text = await res.text();
+          throw new Error(text || "Failed to change password");
+        }
         throw new Error(err.message || "Failed to change password");
       }
 
@@ -124,7 +140,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 pt-28 pb-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
         <motion.div

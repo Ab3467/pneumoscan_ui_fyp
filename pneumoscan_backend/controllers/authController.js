@@ -198,7 +198,7 @@ export const deleteAccount = async (req, res) => {
 // Update Profile
 export const updateProfile = async (req, res) => {
   const { name, email } = req.body;
-  const userId = req.user.id;
+  const userId = req.user.id || req.user._id;
 
   try {
     if (!ensureDbConnection(res)) return;
@@ -232,7 +232,7 @@ export const updateProfile = async (req, res) => {
 // Change Password
 export const changePassword = async (req, res) => {
   const { currentPassword, newPassword } = req.body;
-  const userId = req.user.id;
+  const userId = req.user.id || req.user._id;
 
   try {
     if (!ensureDbConnection(res)) return;

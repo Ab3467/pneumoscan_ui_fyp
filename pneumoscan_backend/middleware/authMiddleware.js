@@ -14,7 +14,7 @@ const authMiddleware = (req, res, next) => {
       console.error("Auth middleware: token decoded without user id:", decoded);
       return res.status(401).json({ message: "Invalid token payload." });
     }
-    req.user = { _id: userId };
+    req.user = { _id: userId, id: userId };
     next();
   } catch (error) {
     console.error("Auth middleware error:", error.message);

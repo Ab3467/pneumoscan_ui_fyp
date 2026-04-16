@@ -18,6 +18,11 @@ import analysisRoutes from "./routes/analysisRoutes.js";
 app.use("/api", predictRoutes);
 app.use("/api/analysis", analysisRoutes);
 
+// API 404 fallback returns JSON instead of HTML
+app.use("/api", (req, res) => {
+  res.status(404).json({ message: "API endpoint not found" });
+});
+
 // Add root route to show backend is working
 app.get("/", (req, res) => {
   res.json({
@@ -28,6 +33,12 @@ app.get("/", (req, res) => {
       auth: "/api/auth"
     }
   });
+});
+
+// Global error handler for any unhandled exception
+app.use((err, req, res, next) => {
+  console.error("Unhandled server error:", err);
+  res.status(500).json({ message: "Server error", error: err?.message || "Internal Server Error" });
 });
 
 const PORT = process.env.PORT || 5000;
