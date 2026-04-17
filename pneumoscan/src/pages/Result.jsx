@@ -20,8 +20,6 @@ export default function Result() {
   const isPneumonia = prediction?.label === "PNEUMONIA";
   const confidence = prediction?.confidence ? Math.round(prediction.confidence * 100) : null;
   const heatmap = prediction?.heatmap;
-  const isValidChestXray = prediction?.isValidChestXray !== false; // Default to true for backward compatibility
-  const chestConfidence = prediction?.chestConfidence ? Math.round(prediction.chestConfidence * 100) : null;
 
   const modelMetrics = {
     accuracy: "92.46%",
@@ -203,23 +201,6 @@ export default function Result() {
               <div className="h-4 bg-gray-100 rounded-full overflow-hidden mb-8">
                 <div style={{ width: confidence !== null ? `${confidence}%` : "0%" }} className={`h-full ${isPneumonia ? 'bg-red-500' : 'bg-green-500'}`} />
               </div>
-
-              {/* Chest X-ray Validation */}
-              {chestConfidence && (
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-blue-900">Chest X-ray Validated</p>
-                      <p className="text-sm text-blue-700">Image confirmed as chest X-ray with {chestConfidence}% confidence</p>
-                    </div>
-                  </div>
-                </div>
-              )}
 
               <div className="space-y-6">
                 <div>

@@ -27,22 +27,6 @@ app.add_middleware(
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
-# Load DenseNet121 chest X-ray classifier
-print("Loading DenseNet121 chest X-ray classifier...")
-chest_classifier = models.densenet121(weights=None)
-chest_classifier.classifier = nn.Linear(1024, 2)  # Binary classification: chest_xray vs not_chest_xray
-
-try:
-    # You'll need to train or download pre-trained weights for chest X-ray classification
-    # For now, we'll initialize with random weights - replace with actual trained model
-    # chest_classifier.load_state_dict(torch.load("chest_xray_classifier.pth", map_location=device))
-    print("⚠️  Chest X-ray classifier initialized with random weights. Please train or load pre-trained weights!")
-except Exception as e:
-    print(f"⚠️  Chest X-ray classifier not found: {e}. Using random weights.")
-
-chest_classifier.to(device)
-chest_classifier.eval()
-
 # Load ResNet50 pneumonia model
 print("Loading ResNet50 pneumonia model...")
 pneumonia_model = models.resnet50(weights=None)
@@ -63,7 +47,7 @@ pneumonia_model.eval()
 target_layers = [pneumonia_model.layer4[-1]]
 cam = GradCAM(model=pneumonia_model, target_layers=target_layers)
 
-# Preprocessing for both models (224x224 is standard for both DenseNet and ResNet)
+# Preprocessing for the ResNet50 pneumonia model
 preprocess = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -71,7 +55,6 @@ preprocess = transforms.Compose([
 ])
 
 CLASS_NAMES = ["NORMAL", "PNEUMONIA"]
-CHEST_CLASSES = ["NOT_CHEST_XRAY", "CHEST_XRAY"]
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
@@ -84,30 +67,7 @@ async def predict(file: UploadFile = File(...)):
 
         print(f"Image loaded: {img.size}")
 
-        # Step 1: Check if it's a chest X-ray
-        print("Step 1: Checking if image is a chest X-ray...")
-        with torch.no_grad():
-            chest_outputs = chest_classifier(input_tensor)
-            chest_probs = torch.nn.functional.softmax(chest_outputs.squeeze(0), dim=0)
-            chest_pred_idx = int(chest_probs.argmax())
-            chest_confidence = float(chest_probs[chest_pred_idx])
-            is_chest_xray = CHEST_CLASSES[chest_pred_idx] == "CHEST_XRAY"
-
-        print(f"Chest X-ray classification: {CHEST_CLASSES[chest_pred_idx]} ({chest_confidence:.2%} confidence)")
-
-        # If not a chest X-ray, return early
-        if not is_chest_xray:
-            print("❌ Image is not identified as a chest X-ray. Skipping pneumonia analysis.")
-            return {
-                "label": "INVALID_IMAGE",
-                "confidence": chest_confidence,
-                "is_chest_xray": False,
-                "message": "The uploaded image does not appear to be a chest X-ray. Please upload a proper chest X-ray image for analysis.",
-                "chest_confidence": chest_confidence
-            }
-
-        # Step 2: Pneumonia detection with ResNet50 (only if it's a chest X-ray)
-        print("Step 2: Running pneumonia detection...")
+        print("Running pneumonia detection...")
         with torch.no_grad():
             pneumonia_outputs = pneumonia_model(input_tensor)
             pneumonia_probs = torch.nn.functional.softmax(pneumonia_outputs.squeeze(0), dim=0)
@@ -139,8 +99,6 @@ async def predict(file: UploadFile = File(...)):
         return {
             "label": label,
             "confidence": confidence,
-            "is_chest_xray": True,
-            "chest_confidence": chest_confidence,
             "heatmap": f"data:image/jpeg;base64,{heatmap_base64}"
         }
 
@@ -150,14 +108,7 @@ async def predict(file: UploadFile = File(...)):
 
 @app.get("/")
 def health():
-    return {
-        "status": "ok",
-        "device": str(device),
-        "models": {
-            "chest_classifier": "DenseNet121",
-            "pneumonia_detector": "ResNet50"
-        }
-    }
+    return {"status": "ok", "device": str(device), "models": "ResNet50"}
 
 if __name__ == "__main__":
     import uvicorn

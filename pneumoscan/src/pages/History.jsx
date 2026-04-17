@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Calendar, AlertCircle, CheckCircle, ChevronRight, Activity, Search, Filter, Download } from "lucide-react";
+import { Calendar, AlertCircle, CheckCircle, ChevronRight, Activity, Search, Filter, Download, Trash2 } from "lucide-react";
 
 export default function History() {
   const [history, setHistory] = useState([]);
@@ -10,6 +10,7 @@ export default function History() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all"); // all, normal, pneumonia
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     fetchHistory();
@@ -92,6 +93,38 @@ export default function History() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const deleteHistoryItem = async (itemId) => {
+    if (!window.confirm("Are you sure you want to delete this scan result permanently?")) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Please login to delete history items.");
+      }
+
+      setDeletingId(itemId);
+      const res = await fetch(`http://localhost:5000/api/analysis/${itemId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Failed to delete history item");
+      }
+
+      setHistory((prev) => prev.filter((item) => item._id !== itemId));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   if (isLoading) {
@@ -236,8 +269,8 @@ export default function History() {
                    <div className="flex items-center justify-between mb-3 border-b border-gray-50 pb-3">
                      <span className="text-sm text-gray-500 font-medium">Scan ID: #{item._id.substring(item._id.length - 6).toUpperCase()}</span>
                    </div>
-                   
-                   <div className="flex items-end justify-between">
+              
+                   <div className="flex items-end justify-between gap-3">
                      <div>
                        <div className="flex items-center gap-2 mb-1">
                          {item.label === "PNEUMONIA" ? (
@@ -252,9 +285,19 @@ export default function History() {
                        <p className="text-sm text-gray-400">Diagnosis</p>
                      </div>
                      
-                     <div className="text-right">
-                       <p className="font-bold text-gray-900 text-lg">{Math.round(item.confidence * 100)}%</p>
-                       <p className="text-sm text-gray-400">Confidence</p>
+                     <div className="flex flex-col items-end gap-3">
+                       <div className="text-right">
+                         <p className="font-bold text-gray-900 text-lg">{Math.round(item.confidence * 100)}%</p>
+                         <p className="text-sm text-gray-400">Confidence</p>
+                       </div>
+                       <button
+                         onClick={() => deleteHistoryItem(item._id)}
+                         disabled={deletingId === item._id}
+                         className="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-red-200 bg-red-50 text-red-600 text-sm font-medium hover:bg-red-100 transition"
+                       >
+                         <Trash2 className="w-4 h-4" />
+                         {deletingId === item._id ? "Deleting..." : "Delete"}
+                       </button>
                      </div>
                    </div>
                  </div>

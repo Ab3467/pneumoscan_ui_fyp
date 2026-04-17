@@ -107,10 +107,6 @@ export default function UploadBox() {
         }
 
         // Handle invalid chest X-ray images
-        if (err.isValidChestXray === false) {
-          throw new Error(err.message || "The uploaded image does not appear to be a chest X-ray. Please upload a proper chest X-ray image.");
-        }
-
         throw new Error(err.message || "Prediction failed");
       }
 
