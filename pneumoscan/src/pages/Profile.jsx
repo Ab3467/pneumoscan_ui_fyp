@@ -140,7 +140,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 pt-28 pb-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 pt-28 pb-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
         <motion.div
@@ -148,10 +148,10 @@ export default function Profile() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg shadow-blue-600/25 mb-4">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg shadow-blue-600/25 mb-4">
             <User size={36} className="text-white" />
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold bg-linear-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-2">
             Profile Settings
           </h1>
           <p className="text-slate-600 text-lg">Manage your account and security preferences</p>
@@ -164,7 +164,7 @@ export default function Profile() {
           className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl shadow-slate-900/10 border border-white/50 overflow-hidden"
         >
           {/* Tab Navigation */}
-          <div className="bg-gradient-to-r from-slate-50 to-blue-50/50 border-b border-slate-200/50">
+          <div className="bg-linear-to-r from-slate-50 to-blue-50/50 border-b border-slate-200/50">
             <div className="max-w-2xl mx-auto px-6">
               <div className="flex justify-center">
                 <div className="flex bg-white/60 backdrop-blur-sm rounded-xl p-1 shadow-sm border border-white/40">
@@ -172,7 +172,7 @@ export default function Profile() {
                     onClick={() => setActiveTab("profile")}
                     className={`relative px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
                       activeTab === "profile"
-                        ? "text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-600/25"
+                        ? "text-white bg-linear-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-600/25"
                         : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
                     }`}
                   >
@@ -183,7 +183,7 @@ export default function Profile() {
                     onClick={() => setActiveTab("password")}
                     className={`relative px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 ${
                       activeTab === "password"
-                        ? "text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-600/25"
+                        ? "text-white bg-linear-to-r from-blue-600 to-indigo-600 shadow-lg shadow-blue-600/25"
                         : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
                     }`}
                   >
@@ -209,7 +209,7 @@ export default function Profile() {
                 >
                   <form onSubmit={handleProfileUpdate} className="max-w-2xl mx-auto space-y-8">
                     <div className="text-center mb-8">
-                      <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl mb-4">
+                      <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-blue-100 to-indigo-100 rounded-2xl mb-4">
                         <User className="w-8 h-8 text-blue-600" />
                       </div>
                       <h2 className="text-2xl font-bold text-slate-900 mb-2">Personal Information</h2>
@@ -222,7 +222,7 @@ export default function Profile() {
                           Full Name
                         </label>
                         <div className="relative group">
-                          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute inset-0 bg-linear-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
                             <div className="absolute left-4 top-1/2 -translate-y-1/2">
                               <User className="w-5 h-5 text-slate-400" />
@@ -244,7 +244,7 @@ export default function Profile() {
                           Email Address
                         </label>
                         <div className="relative group">
-                          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute inset-0 bg-linear-to-r from-blue-500/10 to-indigo-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
                             <div className="absolute left-4 top-1/2 -translate-y-1/2">
                               <Mail className="w-5 h-5 text-slate-400" />
@@ -261,13 +261,13 @@ export default function Profile() {
                         </div>
                       </div>
                     </div>
-
+                    
                     <motion.button
                       type="submit"
                       disabled={isLoading}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold shadow-lg shadow-blue-600/25 hover:shadow-xl hover:shadow-blue-600/30 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-300 flex items-center justify-center gap-3"
+                      className="w-full bg-linear-to-r from-blue-600 to-indigo-600 text-white py-4 px-6 rounded-xl font-semibold shadow-lg shadow-blue-600/25 hover:shadow-xl hover:shadow-blue-600/30 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-300 flex items-center justify-center gap-3"
                     >
                       <Save size={20} />
                       {isLoading ? (
@@ -299,7 +299,7 @@ export default function Profile() {
                 >
                   <form onSubmit={handlePasswordChange} className="max-w-2xl mx-auto space-y-8">
                     <div className="text-center mb-8">
-                      <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-2xl mb-4">
+                      <div className="inline-flex items-center justify-center w-16 h-16 bg-linear-to-br from-emerald-100 to-teal-100 rounded-2xl mb-4">
                         <Shield className="w-8 h-8 text-emerald-600" />
                       </div>
                       <h2 className="text-2xl font-bold text-slate-900 mb-2">Security Settings</h2>
@@ -312,7 +312,7 @@ export default function Profile() {
                           Current Password
                         </label>
                         <div className="relative group">
-                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute inset-0 bg-linear-to-r from-emerald-500/10 to-teal-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
                             <div className="absolute left-4 top-1/2 -translate-y-1/2">
                               <Lock className="w-5 h-5 text-slate-400" />
@@ -341,7 +341,7 @@ export default function Profile() {
                           New Password
                         </label>
                         <div className="relative group">
-                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute inset-0 bg-linear-to-r from-emerald-500/10 to-teal-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
                             <div className="absolute left-4 top-1/2 -translate-y-1/2">
                               <Lock className="w-5 h-5 text-slate-400" />
@@ -370,7 +370,7 @@ export default function Profile() {
                           Confirm New Password
                         </label>
                         <div className="relative group">
-                          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute inset-0 bg-linear-to-r from-emerald-500/10 to-teal-500/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           <div className="relative bg-white/80 backdrop-blur-sm border border-slate-200/50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
                             <div className="absolute left-4 top-1/2 -translate-y-1/2">
                               <Lock className="w-5 h-5 text-slate-400" />
@@ -400,7 +400,7 @@ export default function Profile() {
                       disabled={isLoading}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-4 px-6 rounded-xl font-semibold shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/30 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-300 flex items-center justify-center gap-3"
+                      className="w-full bg-linear-to-r from-emerald-600 to-teal-600 text-white py-4 px-6 rounded-xl font-semibold shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/30 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-300 flex items-center justify-center gap-3"
                     >
                       <Shield size={20} />
                       {isLoading ? (

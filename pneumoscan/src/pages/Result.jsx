@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, AlertCircle, Zap, BarChart3, Download, Share2 } from "lucide-react";
 import jsPDF from "jspdf";
+import MedicalDisclaimer from "../components/MedicalDisclaimer";
 
 export default function Result() {
   const location = useLocation();
@@ -19,6 +20,8 @@ export default function Result() {
   const isPneumonia = prediction?.label === "PNEUMONIA";
   const confidence = prediction?.confidence ? Math.round(prediction.confidence * 100) : null;
   const heatmap = prediction?.heatmap;
+  const isValidChestXray = prediction?.isValidChestXray !== false; // Default to true for backward compatibility
+  const chestConfidence = prediction?.chestConfidence ? Math.round(prediction.chestConfidence * 100) : null;
 
   const modelMetrics = {
     accuracy: "92.46%",
@@ -201,6 +204,23 @@ export default function Result() {
                 <div style={{ width: confidence !== null ? `${confidence}%` : "0%" }} className={`h-full ${isPneumonia ? 'bg-red-500' : 'bg-green-500'}`} />
               </div>
 
+              {/* Chest X-ray Validation */}
+              {chestConfidence && (
+                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-blue-900">Chest X-ray Validated</p>
+                      <p className="text-sm text-blue-700">Image confirmed as chest X-ray with {chestConfidence}% confidence</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-6">
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 mb-3">Analysis Summary</h3>
@@ -320,6 +340,16 @@ export default function Result() {
             </div>
           </div>
         </div>
+
+        {/* Medical Disclaimer */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mt-12 max-w-4xl mx-auto"
+        >
+          <MedicalDisclaimer variant="detailed" />
+        </motion.div>
       </div>
     </motion.div>
   );

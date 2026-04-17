@@ -143,10 +143,7 @@ export default function Footer() {
               </h4>
               <ul className="space-y-3 text-gray-400">
                 <motion.li whileHover={{ color: "#ffffff" }} className="cursor-pointer">
-                  fyp.group@university.edu
-                </motion.li>
-                <motion.li whileHover={{ color: "#ffffff" }} className="cursor-pointer">
-                  +1 (234) 567-890
+                  support@pneumoscan.health
                 </motion.li>
                 <li className="flex gap-4 mt-4 pt-2">
                   {[

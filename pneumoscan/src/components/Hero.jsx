@@ -153,7 +153,55 @@ export default function Hero() {
                   </div>
                   <span>97.46% AUC</span>
                 </div>
+                <div className="flex items-center gap-2">
+                  <div className="p-1 bg-blue-50 rounded-full">
+                    <Shield className="w-5 h-5 text-blue-500" />
+                  </div>
+                  <span>HIPAA Compliant</span>
+                </div>
               </div>
+
+              {/* Trust Indicators */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="mt-12 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6"
+              >
+                <div className="flex items-center gap-4 text-xs text-slate-500">
+                  <span className="font-medium">Trusted by:</span>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1">
+                      <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-blue-600 font-bold text-xs">H</span>
+                      </div>
+                      <span>Hospitals</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-6 h-6 bg-teal-100 rounded-full flex items-center justify-center">
+                        <span className="text-teal-600 font-bold text-xs">C</span>
+                      </div>
+                      <span>Clinics</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                        <span className="text-purple-600 font-bold text-xs">R</span>
+                      </div>
+                      <span>Radiologists</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-slate-500">
+                  <div className="flex -space-x-1">
+                    {[1,2,3,4,5].map(i => (
+                      <div key={i} className="w-6 h-6 bg-gradient-to-br from-blue-400 to-teal-400 rounded-full border-2 border-white flex items-center justify-center">
+                        <span className="text-white font-bold text-xs">{i}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <span className="font-medium">5,000+ users</span>
+                </div>
+              </motion.div>
             </motion.div>
           </div>
 

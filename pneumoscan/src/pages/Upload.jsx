@@ -1,4 +1,5 @@
 import UploadBox from "../components/UploadBox";
+import MedicalDisclaimer from "../components/MedicalDisclaimer";
 import { motion } from "framer-motion";
 import { Upload as UploadIcon, BarChart3, Shield, Zap } from "lucide-react";
 
@@ -68,13 +69,15 @@ export default function Upload() {
         </motion.div>
 
         <UploadBox />
-        
-        <div className="mt-12 text-center">
-            <p className="text-sm text-gray-400">
-                Disclaimer: This tool is for educational and assistive purposes only. <br/>
-                Always consult a medical professional for diagnosis.
-            </p>
-        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mt-12 max-w-4xl mx-auto"
+        >
+          <MedicalDisclaimer variant="detailed" />
+        </motion.div>
       </div>
     </div>
   );

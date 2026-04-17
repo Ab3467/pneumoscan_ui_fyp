@@ -51,10 +51,28 @@ export const predict = [
       );
       console.log("Python response received:", pythonResponse.data);
 
-      const { label, confidence, heatmap } = pythonResponse.data;
-      const responsePayload = { label, confidence };
+      const { label, confidence, heatmap, is_chest_xray, message, chest_confidence } = pythonResponse.data;
+
+      // Handle invalid images (not chest X-rays)
+      if (is_chest_xray === false) {
+        console.log("INVALID IMAGE: Not a chest X-ray");
+        return res.status(400).json({
+          message: message || "The uploaded image does not appear to be a chest X-ray. Please upload a proper chest X-ray image.",
+          isValidChestXray: false,
+          chestConfidence: chest_confidence
+        });
+      }
+
+      // Valid chest X-ray - proceed with pneumonia analysis
+      const responsePayload = {
+        label,
+        confidence,
+        isValidChestXray: true,
+        chestConfidence: chest_confidence
+      };
+
       if (heatmap) responsePayload.heatmap = heatmap;
-      
+
       res.status(200).json(responsePayload);
     } catch (error) {
       console.error("Prediction error:", error.message);

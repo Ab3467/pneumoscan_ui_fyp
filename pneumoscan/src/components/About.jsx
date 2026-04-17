@@ -295,7 +295,7 @@ export default function About() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-20 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-8"
+          className="mt-20 bg-linear-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-8"
         >
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center shrink-0">
@@ -310,7 +310,7 @@ export default function About() {
                   <strong>PneumoScan is not a substitute for professional medical advice, diagnosis, or treatment.</strong> This tool is designed to assist healthcare professionals by providing AI-powered analysis of chest X-ray images for pneumonia detection.
                 </p>
                 <p>
-                  Always consult with qualified medical professionals for accurate diagnosis and treatment decisions. The AI model's predictions should be used as a supplementary tool alongside clinical judgment, patient history, and other diagnostic tests.
+                  Always consult with qualified medical professionals for accurate diagnosis and treatment decisions. The AI model&apos;s predictions should be used as a supplementary tool alongside clinical judgment, patient history, and other diagnostic tests.
                 </p>
                 <p>
                   The developers and providers of this application are not liable for any decisions made based on the AI analysis results. Users are responsible for verifying the accuracy of results and ensuring appropriate medical care.
