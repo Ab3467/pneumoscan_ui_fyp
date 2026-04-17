@@ -47,7 +47,7 @@ export default function Login() {
       {/* Left Side - Image/Branding */}
       <div className="hidden lg:flex w-1/2 bg-blue-600 relative overflow-hidden items-center justify-center">
         <div className="absolute inset-0 bg-linear-to-br from-blue-600 to-teal-600 opacity-90" />
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')] bg-cover bg-center mix-blend-overlay" />
         
         <div className="relative z-10 text-white max-w-lg px-12">
           <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl inline-block mb-8">

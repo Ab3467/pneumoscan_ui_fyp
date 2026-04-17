@@ -58,7 +58,7 @@ const handleSubmit = async (e) => {
       {/* Right Side - Image/Branding */}
       <div className="hidden lg:flex w-1/2 bg-teal-600 relative overflow-hidden items-center justify-center">
         <div className="absolute inset-0 bg-linear-to-bl from-teal-600 to-blue-600 opacity-90" />
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2089&q=80')] bg-cover bg-center mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=2089&q=80')] bg-cover bg-center mix-blend-overlay" />
         
         <div className="relative z-10 text-white max-w-lg px-12 text-right">
           <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl inline-block mb-8 ml-auto">
@@ -185,24 +185,6 @@ const handleSubmit = async (e) => {
                     </button>
                 </div>
                 </div>
-            </div>
-
-            <div className="flex items-center">
-              <input
-                id="showPasswords"
-                name="showPasswords"
-                type="checkbox"
-                checked={showPassword && showConfirmPassword}
-                onChange={(e) => {
-                  const shouldShow = e.target.checked;
-                  setShowPassword(shouldShow);
-                  setShowConfirmPassword(shouldShow);
-                }}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label htmlFor="showPasswords" className="ml-2 block text-sm text-gray-700">
-                Show passwords
-              </label>
             </div>
 
             <div className="flex items-center">
