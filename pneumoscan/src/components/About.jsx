@@ -102,7 +102,7 @@ export default function About() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-3 gap-6 mb-20"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20"
         >
           {stats.map((stat, i) => {
             const IconComponent = stat.icon;
@@ -218,7 +218,7 @@ export default function About() {
               ))}
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {stats.map((stat, i) => (
                 <motion.div 
                   key={i} 
@@ -235,7 +235,7 @@ export default function About() {
           {/* Right Content - Timeline/Steps */}
           <div className="relative">
             {/* Connecting Line */}
-            <div className="absolute top-8 left-8 bottom-8 w-0.5 bg-linear-to-b from-blue-200 via-teal-200 to-transparent lg:left-8" />
+            <div className="hidden lg:block absolute top-8 left-8 bottom-8 w-0.5 bg-linear-to-b from-blue-200 via-teal-200 to-transparent" />
             
             <div className="space-y-12">
               {steps.map((step, idx) => (

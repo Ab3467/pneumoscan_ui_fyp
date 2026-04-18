@@ -300,7 +300,7 @@ export default function Result() {
                 </div>
               </div>
 
-              <div className="mt-8 pt-8 border-t border-gray-100 flex gap-4">
+              <div className="mt-8 pt-8 border-t border-gray-100 flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={handleDownload}
                   disabled={isDownloading}

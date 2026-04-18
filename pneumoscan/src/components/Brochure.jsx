@@ -56,28 +56,40 @@ export default function Brochure() {
               Explore three interactive sections that highlight the clinical workflow, security, and explainable AI behind our chest X-ray analysis.
             </p>
 
-            <div className="grid gap-4 sm:grid-cols-3">
-              {sections.map((item) => (
-                <motion.button
-                  key={item.id}
-                  whileHover={{ y: -6 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    setActiveSection(item);
-                    setIsModalOpen(true);
-                  }}
-                  className="group rounded-3xl border border-slate-200 p-5 bg-slate-50 shadow-sm text-left transition hover:border-blue-300 hover:bg-white"
-                >
-                  <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${item.accent}`}>
-                    <CheckCircle2 className="w-4 h-4" /> {item.subtitle}
-                  </div>
-                  <h3 className="mt-4 text-xl font-semibold text-slate-900">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
-                  <div className="mt-4 text-sm font-semibold text-blue-600 group-hover:text-blue-700 transition">
-                    Open brochure →
-                  </div>
-                </motion.button>
-              ))}
+            <div className="relative">
+              <div className="pointer-events-none hidden lg:block">
+                <svg className="absolute inset-0 h-full w-full" viewBox="0 0 1200 380" fill="none" preserveAspectRatio="none">
+                  <path d="M80 80 C 240 80 360 160 520 160" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="6 6" />
+                  <path d="M80 200 C 240 200 360 240 520 240" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="6 6" />
+                  <path d="M80 320 C 240 320 360 320 520 320" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="6 6" />
+                  <circle cx="520" cy="160" r="4" fill="#cbd5e1" />
+                  <circle cx="520" cy="240" r="4" fill="#cbd5e1" />
+                  <circle cx="520" cy="320" r="4" fill="#cbd5e1" />
+                </svg>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-3 relative z-10">
+                {sections.map((item) => (
+                  <motion.button
+                    key={item.id}
+                    whileHover={{ y: -6 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      setActiveSection(item);
+                      setIsModalOpen(true);
+                    }}
+                    className="group rounded-3xl border border-slate-200 p-5 bg-slate-50 shadow-sm text-left transition hover:border-blue-300 hover:bg-white"
+                  >
+                    <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${item.accent}`}>
+                      <CheckCircle2 className="w-4 h-4" /> {item.subtitle}
+                    </div>
+                    <h3 className="mt-4 text-xl font-semibold text-slate-900">{item.title}</h3>
+                    <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
+                    <div className="mt-4 text-sm font-semibold text-blue-600 group-hover:text-blue-700 transition">
+                      Open brochure →
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
