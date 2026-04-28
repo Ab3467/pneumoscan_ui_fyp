@@ -1,0 +1,36 @@
+# Pneumonia Detection Inference Service
+
+FastAPI service that loads a ResNet50 PyTorch model (`.pth`) and serves binary pneumonia predictions.
+
+## Setup
+
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. Place your trained model weights in this directory as `best_resnet50_pneumonia.pth`.
+   - If your file has a different name, update `MODEL_PATH` in `main.py`.
+
+3. Run the service:
+   ```bash
+   uvicorn main_fixed:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+## API
+
+- `POST /predict` – upload an image file (`multipart/form-data` field `image`). Returns:
+  ```json
+  {
+    "label": "PNEUMONIA",
+    "confidence": 0.92
+  }
+  ```
+
+- `GET /` – health check (returns device used).
+
+## Notes
+
+- Accepts common image formats (JPEG, PNG). Converts to RGB before inference.
+- Uses ImageNet normalization as required for pretrained ResNet50.
+- Returns the softmax confidence for the predicted class.

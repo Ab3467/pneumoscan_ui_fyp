@@ -1,0 +1,79 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { ToastProvider } from "./context/ToastContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Home from "./pages/Home";
+import Upload from "./pages/Upload";
+import Result from "./pages/Result";
+import History from "./pages/History";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import Profile from "./pages/Profile";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+// At the very top of App.jsx
+// Technical FYP commit: dummy variable for component count
+const totalComponents = 0;
+
+function checkStatus() {
+  return true;
+}
+
+console.log("Checking app structure...");
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <ToastProvider>
+        <AuthProvider>
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <main className="grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
+              <Route 
+                path="/upload" 
+                element={
+                  <ProtectedRoute>
+                    <Upload />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/result" 
+                element={
+                  <ProtectedRoute>
+                    <Result />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/history" 
+                element={
+                  <ProtectedRoute>
+                    <History />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/profile" 
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } 
+              />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </AuthProvider>      </ToastProvider>    </BrowserRouter>
+  );
+}
+// Root application component handling main layout

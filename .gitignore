@@ -1,0 +1,25 @@
+dataset/
+*.zip
+*.pth
+*.jar
+
+node_modules/
+pneumoscan_backend/node_modules/
+dist/
+build/
+*.log
+.env
+
+# AI / ML files
+*.h5
+*.pt
+*.pth
+
+# Images / datasets
+*.jpg
+*.jpeg
+*.png
+*.csv
+
+# Others
+__pycache__/

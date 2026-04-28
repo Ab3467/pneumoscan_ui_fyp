@@ -1,0 +1,35 @@
+/* App root container */
+#root {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  text-align: left;
+}
+
+.logo {
+  height: 3.5rem;
+  padding: 0.5rem;
+  will-change: filter;
+  transition: filter 300ms, transform 200ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 10px 30px rgba(79,70,229,0.12));
+  transform: translateY(-2px);
+}
+
+@keyframes logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo { animation: logo-spin infinite 20s linear; }
+}
+
+.card { padding: 1.5rem; }
+
+.read-the-docs { color: #6b7280; }
+
+/* small helper for centering panels */
+.center-panel { @apply mx-auto max-w-3xl; }
+/* Global styles for layout consistency */
