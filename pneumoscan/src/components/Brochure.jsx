@@ -236,3 +236,5 @@ export default function Brochure() {
     </section>
   );
 }
+
+// brochure design
