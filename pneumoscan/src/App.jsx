@@ -77,3 +77,4 @@ export default function App() {
   );
 }
 // Root application component handling main layout
+// app.jsx
