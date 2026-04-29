@@ -372,3 +372,4 @@ export default function Hero() {
     </div>
   );
 }
+/* hero.jsx */
