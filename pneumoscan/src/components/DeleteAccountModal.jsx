@@ -88,4 +88,4 @@ export default function DeleteAccountModal({ isOpen, onClose, onConfirm, isLoadi
     </>
   );
 }
-// commits 
+
